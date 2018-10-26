@@ -1,0 +1,89 @@
+/*
+ * http://acm.nyist.edu.cn/JudgeOnline/problem.php?pid=2
+ *@描述
+ * 现在，有一行括号序列，请你检查这行括号是否配对。
+ *@输入
+ * 第一行输入一个数N（0<N<=100）,表示有N组测试数据。后面的N行输入多组输入数据，
+ * 每组输入数据都是一个字符串S(S的长度小于10000，且S不是空串），测试数据组数少
+ * 于5组。数据保证S中只含有"[", "]", "(", ")" 四种字符
+ *@输出
+ * 每组输入数据的输出占一行，如果该字符串中所含的括号是配对的，则输出Yes,如果不
+ * 配对则输出No
+ *@样例输入
+ * 3
+ * [(])
+ * (])
+ * ([[]()])
+ *@样例输出
+ * No
+ * No
+ * Yes
+ */
+#include <iostream>
+#include <string>
+
+class matchstack final {
+public:
+	bool push(char c)
+	{
+		switch (c) {
+			case '[':
+			case '(':
+				m_data.push_back(c);
+				return true;
+			case ']':
+				if (m_data.empty()) {
+					return false;
+				}
+				if (m_data.back() == '[') {
+					m_data.pop_back();
+					return true;
+				}
+				return false;
+			case ')':
+				if (m_data.empty()) {
+					return false;
+				}
+				if (m_data.back() == '(') {
+					m_data.pop_back();
+					return true;
+				}
+				return false;
+			default:
+				return false;
+		}
+	}
+
+	bool empty()
+	{
+		return m_data.empty();
+	}
+private:
+	std::string m_data;
+};
+
+
+int main()
+{
+	bool ret = true;
+	int N;
+
+	std::cin >> N;
+
+	for (int i = 0; i < N; ++i) {
+		std::string tmp;
+		std::cin >> tmp;
+		matchstack ms;
+		for (auto it : tmp) {
+			ret = ms.push(it);
+			if (!ret)
+				break;
+		}
+		if (!ms.empty())
+			ret = false;
+		std::cout << (ret ? "Yes" : "No") << std::endl;
+	}
+
+	return 0;
+}
+
